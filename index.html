@@ -1003,22 +1003,34 @@ function getMyLocation() {
   const status  = document.getElementById('loc-status');
 
   if (!navigator.geolocation) {
-    status.style.display  = 'block';
+    status.style.display    = 'block';
     status.style.background = '#FCEBEB';
-    status.style.color    = '#A32D2D';
-    status.textContent    = '❌ Your browser does not support location. Please type your address.';
+    status.style.color      = '#A32D2D';
+    status.textContent      = '❌ Your browser does not support location. Please type your address.';
     return;
   }
 
-  // Loading state
-  btnText.textContent = 'Detecting your location…';
+  // Loading state — show cancel option
+  btnText.textContent = 'Detecting… (click to cancel)';
   btnIcon.textContent = '⏳';
-  btn.style.opacity   = '0.7';
-  btn.disabled        = true;
+  btn.style.opacity   = '1';
+  btn.style.background = '#FDF0E0';
+  btn.disabled        = false;
+  btn.onclick         = cancelLocation;
   status.style.display = 'none';
 
-  navigator.geolocation.getCurrentPosition(
+  // Timeout fallback — if no response in 6 seconds, show error
+  const fallbackTimer = setTimeout(() => {
+    resetLocBtn();
+    status.style.display    = 'block';
+    status.style.background = '#FAEEDA';
+    status.style.color      = '#854F0B';
+    status.textContent      = '⚠️ Location is taking too long. Please type your pickup address manually.';
+  }, 6000);
+
+  const watchId = navigator.geolocation.getCurrentPosition(
     (pos) => {
+      clearTimeout(fallbackTimer);
       const lat = pos.coords.latitude.toFixed(6);
       const lng = pos.coords.longitude.toFixed(6);
       const mapsUrl = `https://maps.google.com/?q=${lat},${lng}`;
@@ -1026,20 +1038,18 @@ function getMyLocation() {
       // Save coords for WhatsApp message
       document.getElementById('pickup-coords').value = `${lat},${lng}`;
 
-      // Fill pickup field with coordinates label
-      const pickupInput = document.getElementById('pickup');
-      pickupInput.value = `My location (${lat}, ${lng})`;
+      // Fill pickup field
+      document.getElementById('pickup').value = `My location (${lat}, ${lng})`;
 
-      // Update button to success state
-      btnText.textContent = '✅ Location detected! Tap to update';
-      btnIcon.textContent = '📍';
-      btn.style.opacity   = '1';
-      btn.style.background = '#EAF3DE';
+      // Success button state
+      btnText.textContent   = '✅ Location detected! Click to retry';
+      btnIcon.textContent   = '📍';
+      btn.style.background  = '#EAF3DE';
       btn.style.borderColor = '#639922';
-      btn.style.color     = '#27500A';
-      btn.disabled        = false;
+      btn.style.color       = '#27500A';
+      btn.onclick           = getMyLocation;
 
-      // Show success status with Maps link
+      // Show success with Maps link
       status.style.display    = 'block';
       status.style.background = '#EAF3DE';
       status.style.color      = '#27500A';
@@ -1048,26 +1058,36 @@ function getMyLocation() {
       calcFare();
     },
     (err) => {
-      // Reset button
-      btnText.textContent = 'Use my current location';
-      btnIcon.textContent = '📍';
-      btn.style.opacity   = '1';
-      btn.disabled        = false;
-
+      clearTimeout(fallbackTimer);
+      resetLocBtn();
       status.style.display    = 'block';
       status.style.background = '#FAEEDA';
       status.style.color      = '#854F0B';
-
       if (err.code === 1) {
-        status.textContent = '⚠️ Location permission denied. Please allow location in your browser settings, or type your address manually.';
-      } else if (err.code === 2) {
-        status.textContent = '⚠️ Could not detect location. Please type your address manually.';
+        status.textContent = '⚠️ Location permission denied. Allow location in browser settings, or type your address.';
       } else {
-        status.textContent = '⚠️ Location timed out. Please type your address manually.';
+        status.textContent = '⚠️ Could not get location. Please type your pickup address manually.';
       }
     },
-    { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+    // Fast settings — no high accuracy, short timeout
+    { enableHighAccuracy: false, timeout: 5000, maximumAge: 60000 }
   );
+}
+
+function cancelLocation() {
+  resetLocBtn();
+  document.getElementById('loc-status').style.display = 'none';
+}
+
+function resetLocBtn() {
+  const btn = document.getElementById('loc-btn');
+  document.getElementById('loc-btn-text').textContent = 'Use my current location';
+  document.getElementById('loc-btn-icon').textContent = '📍';
+  btn.style.background  = 'var(--saffron-light)';
+  btn.style.borderColor = 'var(--saffron)';
+  btn.style.color       = 'var(--saffron-dark)';
+  btn.disabled          = false;
+  btn.onclick           = getMyLocation;
 }
 
 // ── Set today's date as default
