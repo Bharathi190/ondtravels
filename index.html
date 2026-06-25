@@ -264,11 +264,18 @@ footer{background:var(--night);padding:48px 5vw 24px}
           <input type="text" id="pickup" placeholder="e.g. Chennai, Coimbatore…" oninput="acInput(this,'ac-pickup')" onkeydown="acKey(event,'ac-pickup','pickup')" autocomplete="off"/>
           <div class="ac-dropdown" id="ac-pickup"></div>
         </div>
-        <button type="button" onclick="getMyLocation()" id="loc-btn"
-          style="margin-top:6px;width:100%;padding:8px;border-radius:8px;border:1.5px dashed var(--saffron);background:var(--saffron-light);color:var(--saffron-dark);font-size:13px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;transition:all 0.2s;">
-          <span id="loc-btn-icon">📍</span>
-          <span id="loc-btn-text">Use my current location</span>
-        </button>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:6px;">
+          <button type="button" onclick="getMyLocation()" id="loc-btn"
+            style="padding:8px 6px;border-radius:8px;border:1.5px dashed var(--saffron);background:var(--saffron-light);color:var(--saffron-dark);font-size:12px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:4px;">
+            <span id="loc-btn-icon">📍</span>
+            <span id="loc-btn-text">Detect location</span>
+          </button>
+          <button type="button" onclick="openGoogleMaps()"
+            style="padding:8px 6px;border-radius:8px;border:1.5px solid #4285F4;background:#E8F0FE;color:#1a56db;font-size:12px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:4px;">
+            🗺️ Share via Maps
+          </button>
+        </div>
+        <div id="loc-status" style="display:none;font-size:11px;margin-top:6px;padding:7px 10px;border-radius:6px;line-height:1.5;"></div>
         <input type="hidden" id="pickup-coords" value=""/>
       </div>
       <div class="form-field">
@@ -1003,91 +1010,104 @@ function getMyLocation() {
   const status  = document.getElementById('loc-status');
 
   if (!navigator.geolocation) {
-    status.style.display    = 'block';
-    status.style.background = '#FCEBEB';
-    status.style.color      = '#A32D2D';
-    status.textContent      = '❌ Your browser does not support location. Please type your address.';
+    showLocStatus('error', '❌ Browser does not support location. Use "Share via Maps" button instead.');
     return;
   }
 
-  // Loading state — show cancel option
-  btnText.textContent = 'Detecting… (click to cancel)';
+  // Check if page is HTTPS
+  if (location.protocol !== 'https:') {
+    showLocStatus('warn', '⚠️ Location only works on HTTPS. Please use the "🗺️ Share via Maps" button instead.');
+    return;
+  }
+
+  btnText.textContent = 'Detecting…';
   btnIcon.textContent = '⏳';
-  btn.style.opacity   = '1';
-  btn.style.background = '#FDF0E0';
-  btn.disabled        = false;
-  btn.onclick         = cancelLocation;
+  btn.disabled        = true;
   status.style.display = 'none';
 
-  // Timeout fallback — if no response in 6 seconds, show error
-  const fallbackTimer = setTimeout(() => {
-    resetLocBtn();
-    status.style.display    = 'block';
-    status.style.background = '#FAEEDA';
-    status.style.color      = '#854F0B';
-    status.textContent      = '⚠️ Location is taking too long. Please type your pickup address manually.';
+  // Fallback after 6 seconds
+  const timer = setTimeout(() => {
+    btn.disabled        = false;
+    btnText.textContent = 'Detect location';
+    btnIcon.textContent = '📍';
+    showLocStatus('warn', '⚠️ Location timed out. Please tap <strong>"🗺️ Share via Maps"</strong> button instead — it always works!');
   }, 6000);
 
-  const watchId = navigator.geolocation.getCurrentPosition(
+  navigator.geolocation.getCurrentPosition(
     (pos) => {
-      clearTimeout(fallbackTimer);
+      clearTimeout(timer);
       const lat = pos.coords.latitude.toFixed(6);
       const lng = pos.coords.longitude.toFixed(6);
-      const mapsUrl = `https://maps.google.com/?q=${lat},${lng}`;
-
-      // Save coords for WhatsApp message
       document.getElementById('pickup-coords').value = `${lat},${lng}`;
-
-      // Fill pickup field
       document.getElementById('pickup').value = `My location (${lat}, ${lng})`;
-
-      // Success button state
-      btnText.textContent   = '✅ Location detected! Click to retry';
+      btnText.textContent   = '✅ Got location!';
       btnIcon.textContent   = '📍';
       btn.style.background  = '#EAF3DE';
       btn.style.borderColor = '#639922';
       btn.style.color       = '#27500A';
-      btn.onclick           = getMyLocation;
-
-      // Show success with Maps link
-      status.style.display    = 'block';
-      status.style.background = '#EAF3DE';
-      status.style.color      = '#27500A';
-      status.innerHTML = `📍 Location captured! <a href="${mapsUrl}" target="_blank" style="color:#185FA5;font-weight:600;">View on Google Maps →</a>`;
-
+      btn.disabled          = false;
+      showLocStatus('success', `📍 Location captured! <a href="https://maps.google.com/?q=${lat},${lng}" target="_blank" style="color:#185FA5;font-weight:600;">View on Google Maps →</a>`);
       calcFare();
     },
     (err) => {
-      clearTimeout(fallbackTimer);
-      resetLocBtn();
-      status.style.display    = 'block';
-      status.style.background = '#FAEEDA';
-      status.style.color      = '#854F0B';
+      clearTimeout(timer);
+      btn.disabled        = false;
+      btnText.textContent = 'Detect location';
+      btnIcon.textContent = '📍';
       if (err.code === 1) {
-        status.textContent = '⚠️ Location permission denied. Allow location in browser settings, or type your address.';
+        showLocStatus('warn', '⚠️ Permission denied. Please tap <strong>"🗺️ Share via Maps"</strong> button — it works without permission!');
       } else {
-        status.textContent = '⚠️ Could not get location. Please type your pickup address manually.';
+        showLocStatus('warn', '⚠️ Could not detect. Please tap <strong>"🗺️ Share via Maps"</strong> button instead.');
       }
     },
-    // Fast settings — no high accuracy, short timeout
     { enableHighAccuracy: false, timeout: 5000, maximumAge: 60000 }
   );
 }
 
+// ── Google Maps share — opens Maps app, customer copies & pastes link
+function openGoogleMaps() {
+  const status = document.getElementById('loc-status');
+  // Open Google Maps current location — works on all phones
+  window.open('https://maps.google.com/?q=my+location', '_blank');
+  showLocStatus('info',
+    `📱 <strong>Steps to share your location:</strong><br/>
+    1️⃣ Google Maps opened — it shows your location<br/>
+    2️⃣ Tap the blue dot (your location) → tap <strong>"Share"</strong><br/>
+    3️⃣ Copy the link → paste it in the <strong>Pickup field</strong> above<br/>
+    4️⃣ Also send this link to owner on WhatsApp: <strong>+91 9361592306</strong>`
+  );
+}
+
+function showLocStatus(type, html) {
+  const status = document.getElementById('loc-status');
+  const styles = {
+    success: { bg:'#EAF3DE', color:'#27500A' },
+    warn:    { bg:'#FAEEDA', color:'#854F0B' },
+    error:   { bg:'#FCEBEB', color:'#A32D2D' },
+    info:    { bg:'#E6F1FB', color:'#0C447C' },
+  };
+  const s = styles[type] || styles.info;
+  status.style.display    = 'block';
+  status.style.background = s.bg;
+  status.style.color      = s.color;
+  status.innerHTML        = html;
+}
+
 function cancelLocation() {
-  resetLocBtn();
+  document.getElementById('loc-btn-text').textContent = 'Detect location';
+  document.getElementById('loc-btn-icon').textContent = '📍';
+  document.getElementById('loc-btn').disabled = false;
   document.getElementById('loc-status').style.display = 'none';
 }
 
 function resetLocBtn() {
   const btn = document.getElementById('loc-btn');
-  document.getElementById('loc-btn-text').textContent = 'Use my current location';
+  document.getElementById('loc-btn-text').textContent = 'Detect location';
   document.getElementById('loc-btn-icon').textContent = '📍';
   btn.style.background  = 'var(--saffron-light)';
   btn.style.borderColor = 'var(--saffron)';
   btn.style.color       = 'var(--saffron-dark)';
   btn.disabled          = false;
-  btn.onclick           = getMyLocation;
 }
 
 // ── Set today's date as default
