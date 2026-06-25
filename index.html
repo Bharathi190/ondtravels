@@ -203,8 +203,23 @@ footer{background:var(--night);padding:48px 5vw 24px}
   .footer-top{grid-template-columns:1fr}
   .form-row{grid-template-columns:1fr}
 }
+/* ── CANCELLATION SECTION ── */
+.cancel-section{background:#fff8f0;padding:60px 5vw;border-top:3px solid var(--saffron)}
+.cancel-inner{max-width:680px;margin:0 auto}
+.cancel-card{background:var(--white);border-radius:var(--radius-lg);box-shadow:var(--shadow);padding:28px}
+.cancel-steps{display:flex;flex-direction:column;gap:0;margin:20px 0}
+.cancel-step{display:flex;gap:14px;padding:12px 0;border-bottom:1px solid var(--gray-light)}
+.cancel-step:last-child{border-bottom:none}
+.cancel-step-num{width:28px;height:28px;border-radius:50%;background:var(--red-50);color:var(--red-600);font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px}
+.cancel-step-text h4{font-size:14px;font-weight:600;color:var(--gray-900);margin-bottom:3px}
+.cancel-step-text p{font-size:13px;color:var(--gray);line-height:1.5}
+.cancel-policy{background:#FDF0E0;border-left:3px solid var(--saffron);border-radius:0 8px 8px 0;padding:12px 16px;margin-top:16px;font-size:13px;color:var(--gray-600);line-height:1.7}
+.cancel-policy strong{color:var(--night)}
+.cancel-form-wrap{margin-top:20px}
+.cancel-result{display:none;margin-top:14px;padding:14px 16px;border-radius:10px;font-size:14px;line-height:1.7}
+.cancel-result.success{background:#ECFDF5;border:1px solid #6EE7B7;color:#065F46}
+.cancel-result.error{background:#FCEBEB;border:1px solid #F09595;color:#A32D2D}
 </style>
-</head>
 <body>
 
 <!-- NAV -->
@@ -218,6 +233,7 @@ footer{background:var(--night);padding:48px 5vw 24px}
     <a href="#services">Services</a>
     <a href="#routes">Routes</a>
     <a href="#about">About</a>
+    <a href="#cancel" style="color:#F5A94A;">Cancel Booking</a>
     <a href="#contact" class="nav-cta">Contact Us</a>
   </div>
   <button class="nav-toggle" onclick="toggleNav()" aria-label="Menu">
@@ -524,6 +540,94 @@ footer{background:var(--night);padding:48px 5vw 24px}
           <li><div class="check">✓</div>Available 24 hours, 7 days a week</li>
           <li><div class="check">✓</div>Special rates for long trips & regular customers</li>
         </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CANCELLATION SECTION -->
+<section class="cancel-section" id="cancel">
+  <div class="cancel-inner">
+    <div class="section-eyebrow">Cancel booking</div>
+    <div class="section-title" style="font-size:28px;">Need to cancel your ride?</div>
+    <div class="section-sub" style="margin-bottom:24px;">No problem — fill in your details below and we'll cancel your booking and notify the owner immediately.</div>
+
+    <div class="cancel-card">
+      <div class="cancel-steps">
+        <div class="cancel-step">
+          <div class="cancel-step-num">1</div>
+          <div class="cancel-step-text">
+            <h4>Enter your booking details below</h4>
+            <p>Use the same name and phone number you used when booking.</p>
+          </div>
+        </div>
+        <div class="cancel-step">
+          <div class="cancel-step-num">2</div>
+          <div class="cancel-step-text">
+            <h4>Click "Cancel My Booking"</h4>
+            <p>A WhatsApp message will open — just tap Send to notify the owner.</p>
+          </div>
+        </div>
+        <div class="cancel-step">
+          <div class="cancel-step-num">3</div>
+          <div class="cancel-step-text">
+            <h4>Owner will confirm cancellation</h4>
+            <p>Owner will call you back within 5 minutes to confirm the cancellation.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="cancel-policy">
+        <strong>Cancellation policy:</strong><br/>
+        ✅ You can cancel your booking <strong>anytime for free</strong> — no charges at all.<br/>
+        💵 We only accept <strong>cash payment</strong> — so no online payment, no deductions.<br/>
+        📞 After cancelling, our owner will call you on <strong>+91 9361592306</strong> to confirm.
+      </div>
+
+      <div class="cancel-form-wrap">
+        <div class="form-row" style="margin-bottom:14px;">
+          <div class="form-group">
+            <label>Your name</label>
+            <input type="text" id="cancel-name" placeholder="Same name used when booking"/>
+          </div>
+          <div class="form-group">
+            <label>Your phone number</label>
+            <input type="tel" id="cancel-phone" placeholder="Same number used when booking"/>
+          </div>
+        </div>
+        <div class="form-row" style="margin-bottom:14px;">
+          <div class="form-group">
+            <label>Pickup location</label>
+            <input type="text" id="cancel-pickup" placeholder="e.g. Thanjavur"/>
+          </div>
+          <div class="form-group">
+            <label>Drop location</label>
+            <input type="text" id="cancel-drop" placeholder="e.g. Chennai"/>
+          </div>
+        </div>
+        <div class="form-group" style="margin-bottom:14px;">
+          <label>Travel date & time</label>
+          <input type="text" id="cancel-datetime" placeholder="e.g. 25 Jun 2026 at 10:00 AM"/>
+        </div>
+        <div class="form-group" style="margin-bottom:16px;">
+          <label>Reason for cancellation (optional)</label>
+          <select id="cancel-reason">
+            <option value="">Select a reason…</option>
+            <option value="Change of plans">Change of plans</option>
+            <option value="Booked by mistake">Booked by mistake</option>
+            <option value="Found another transport">Found another transport</option>
+            <option value="Emergency">Emergency / urgent situation</option>
+            <option value="Trip postponed">Trip postponed</option>
+            <option value="Other">Other reason</option>
+          </select>
+        </div>
+
+        <button class="book-btn" id="cancel-btn" onclick="submitCancellation()"
+          style="background:#E24B4A;">
+          ❌ Cancel My Booking
+        </button>
+
+        <div class="cancel-result" id="cancel-result"></div>
       </div>
     </div>
   </div>
@@ -994,7 +1098,59 @@ function sendEnquiry() {
   document.getElementById('c-msg').value = '';
 }
 
-// ── Toast
+// ── Cancellation
+function submitCancellation() {
+  const name     = document.getElementById('cancel-name').value.trim();
+  const phone    = document.getElementById('cancel-phone').value.trim();
+  const pickup   = document.getElementById('cancel-pickup').value.trim();
+  const drop     = document.getElementById('cancel-drop').value.trim();
+  const datetime = document.getElementById('cancel-datetime').value.trim();
+  const reason   = document.getElementById('cancel-reason').value || 'Not specified';
+  const result   = document.getElementById('cancel-result');
+
+  if (!name)     { showToast('Please enter your name'); return; }
+  if (!phone)    { showToast('Please enter your phone number'); return; }
+  if (!pickup || !drop) { showToast('Please enter pickup and drop locations'); return; }
+
+  const cancelMsg =
+`❌ *BOOKING CANCELLATION — OND Travels*
+
+👤 *Customer:* ${name}
+📞 *Phone:* ${phone}
+
+📍 *Pickup:* ${pickup}
+🏁 *Drop:* ${drop}
+📅 *Travel date/time:* ${datetime || 'Not specified'}
+❓ *Reason:* ${reason}
+
+_Please confirm cancellation by calling the customer._`;
+
+  // Build WhatsApp URL to owner
+  const ownerUrl = 'https://wa.me/919361592306?text=' + encodeURIComponent(cancelMsg);
+
+  // Show result box with WhatsApp button
+  result.style.display = 'block';
+  result.className     = 'cancel-result success';
+  result.innerHTML     = `
+    <strong>✅ Cancellation request ready!</strong><br/>
+    Click the button below to send your cancellation to the owner.<br/>
+    The owner will call you on <strong>${phone}</strong> to confirm.<br/><br/>
+    <a href="${ownerUrl}" target="_blank"
+      style="display:inline-flex;align-items:center;gap:8px;background:#25D366;color:white;padding:11px 20px;border-radius:8px;font-size:14px;font-weight:700;text-decoration:none;margin-top:4px;">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+      Send cancellation to Owner (9361592306)
+    </a>`;
+
+  // Disable button
+  const btn = document.getElementById('cancel-btn');
+  btn.disabled = true;
+  btn.textContent = '✓ Cancellation request sent';
+  btn.style.background = '#6B7280';
+
+  showToast('Cancellation request ready! Click the green button to send.');
+}
+
+
 function showToast(msg) {
   const t = document.getElementById('toast');
   t.textContent = msg;
@@ -1117,22 +1273,159 @@ document.getElementById('bdate').value = new Date().toISOString().split('T')[0];
 //  CITY AUTOCOMPLETE — All Tamil Nadu cities
 // ══════════════════════════════════════════════
 const TN_CITIES = [
-  // ── CHENNAI DISTRICT
-  {name:'Chennai',district:'Chennai',icon:'🏙️',tag:'Capital city'},
-  {name:'Ambattur',district:'Chennai',icon:'🏘️',tag:'Chennai suburb'},
-  {name:'Avadi',district:'Chennai',icon:'🏘️',tag:'Chennai suburb'},
-  {name:'Tambaram',district:'Chennai',icon:'🚂',tag:'Chennai suburb'},
-  {name:'Sholinganallur',district:'Chennai',icon:'💻',tag:'IT corridor'},
-  {name:'Velachery',district:'Chennai',icon:'🏘️',tag:'Chennai locality'},
-  {name:'Perambur',district:'Chennai',icon:'🚂',tag:'Chennai locality'},
-  {name:'Royapuram',district:'Chennai',icon:'⚓',tag:'Chennai locality'},
-  {name:'Perungudi',district:'Chennai',icon:'💻',tag:'IT hub'},
-  {name:'Porur',district:'Chennai',icon:'🏘️',tag:'Chennai suburb'},
-  {name:'Maduravoyal',district:'Chennai',icon:'🏘️',tag:'Chennai suburb'},
-  {name:'Kolathur',district:'Chennai',icon:'🏘️',tag:'Chennai locality'},
-  {name:'Chennai Airport',district:'Chennai',icon:'✈️',tag:'International airport'},
+  // ── CHENNAI DISTRICT — Full stops ⭐
+  // Main city
+  {name:'Chennai',district:'Chennai',icon:'🏙️',tag:'Capital city · Tamil Nadu'},
+  // Your requested areas
+  {name:'Vadapalani',district:'Chennai',icon:'🛕',tag:'Chennai · Murugan temple area'},
+  {name:'Velachery',district:'Chennai',icon:'🏘️',tag:'Chennai · residential hub'},
+  {name:'Thiruvanmiyur',district:'Chennai',icon:'🌊',tag:'Chennai · coastal locality'},
+  {name:'Koyambedu',district:'Chennai',icon:'🚌',tag:'Chennai · CMBT bus terminus'},
+  {name:'Guindy',district:'Chennai',icon:'🏛️',tag:'Chennai · industrial & govt hub'},
+  {name:'Thoraipakkam',district:'Chennai',icon:'💻',tag:'Chennai · IT corridor OMR'},
+  // Airports & Railway stations
+  {name:'Chennai Airport',district:'Chennai',icon:'✈️',tag:'Chennai · international airport'},
+  {name:'Chennai Domestic Airport',district:'Chennai',icon:'✈️',tag:'Chennai · domestic terminal'},
+  {name:'Chennai Central Station',district:'Chennai',icon:'🚂',tag:'Chennai · main railway station'},
+  {name:'Chennai Egmore Station',district:'Chennai',icon:'🚂',tag:'Chennai · railway station'},
+  {name:'CMBT Koyambedu',district:'Chennai',icon:'🚌',tag:'Chennai · central bus terminus'},
+  {name:'Kilambakkam Bus Stand',district:'Chennai',icon:'🚌',tag:'Chennai · new bus terminus'},
+  // Hospitals
+  {name:'Apollo Hospital Chennai',district:'Chennai',icon:'🏥',tag:'Chennai · Greams Road hospital'},
+  {name:'Fortis Malar Hospital',district:'Chennai',icon:'🏥',tag:'Chennai · Adyar hospital'},
+  {name:'MIOT Hospital Chennai',district:'Chennai',icon:'🏥',tag:'Chennai · Manapakkam hospital'},
+  {name:'Stanley Government Hospital',district:'Chennai',icon:'🏥',tag:'Chennai · govt hospital'},
+  {name:'Rajiv Gandhi Govt Hospital',district:'Chennai',icon:'🏥',tag:'Chennai · Park Town hospital'},
+  {name:'Vijaya Hospital Chennai',district:'Chennai',icon:'🏥',tag:'Chennai · NSK Nagar hospital'},
+  {name:'Sri Ramachandra Hospital',district:'Chennai',icon:'🏥',tag:'Chennai · Porur hospital'},
+  {name:'Gleneagles Global Hospital',district:'Chennai',icon:'🏥',tag:'Chennai · Perumbakkam hospital'},
+  // IT Parks & Business
+  {name:'Sholinganallur',district:'Chennai',icon:'💻',tag:'Chennai · IT corridor OMR'},
+  {name:'Perungudi',district:'Chennai',icon:'💻',tag:'Chennai · IT hub OMR'},
+  {name:'Tidel Park',district:'Chennai',icon:'💻',tag:'Chennai · Taramani IT park'},
+  {name:'DLF IT Park Chennai',district:'Chennai',icon:'💻',tag:'Chennai · Mount Poonamalle'},
+  {name:'Ramanujan IT City',district:'Chennai',icon:'💻',tag:'Chennai · Taramani IT hub'},
+  {name:'Mahindra World City',district:'Chennai',icon:'🏭',tag:'Chennai · Chengalpattu IT SEZ'},
+  // Popular localities
+  {name:'T Nagar',district:'Chennai',icon:'🛍️',tag:'Chennai · shopping hub'},
+  {name:'Anna Nagar',district:'Chennai',icon:'🏘️',tag:'Chennai · residential locality'},
+  {name:'Adyar',district:'Chennai',icon:'🌿',tag:'Chennai · riverside locality'},
+  {name:'Nungambakkam',district:'Chennai',icon:'🏢',tag:'Chennai · commercial hub'},
+  {name:'Mylapore',district:'Chennai',icon:'🛕',tag:'Chennai · heritage locality'},
+  {name:'Royapettah',district:'Chennai',icon:'🏘️',tag:'Chennai · central locality'},
+  {name:'Tambaram',district:'Chennai',icon:'🚂',tag:'Chennai · south suburb'},
+  {name:'Ambattur',district:'Chennai',icon:'🏭',tag:'Chennai · industrial suburb'},
+  {name:'Avadi',district:'Chennai',icon:'🏘️',tag:'Chennai · north suburb'},
+  {name:'Porur',district:'Chennai',icon:'🏘️',tag:'Chennai · west suburb'},
+  {name:'Perambur',district:'Chennai',icon:'🚂',tag:'Chennai · north locality'},
+  {name:'Royapuram',district:'Chennai',icon:'⚓',tag:'Chennai · fishing harbour area'},
+  {name:'Maduravoyal',district:'Chennai',icon:'🏘️',tag:'Chennai · west suburb'},
+  {name:'Kolathur',district:'Chennai',icon:'🏘️',tag:'Chennai · north locality'},
+  {name:'Chromepet',district:'Chennai',icon:'🏘️',tag:'Chennai · south suburb'},
+  {name:'Pallavaram',district:'Chennai',icon:'🏘️',tag:'Chennai · south suburb'},
+  {name:'Medavakkam',district:'Chennai',icon:'🏘️',tag:'Chennai · south suburb'},
+  {name:'Sholinganallur OMR',district:'Chennai',icon:'🛣️',tag:'Chennai · Old Mahabalipuram Road'},
+  {name:'Navalur',district:'Chennai',icon:'💻',tag:'Chennai · OMR IT corridor'},
+  {name:'Siruseri',district:'Chennai',icon:'💻',tag:'Chennai · SIPCOT IT park'},
+  {name:'Kelambakkam',district:'Chennai',icon:'🏘️',tag:'Chennai · OMR locality'},
+  {name:'Mogappair',district:'Chennai',icon:'🏘️',tag:'Chennai · north west locality'},
+  {name:'Virugambakkam',district:'Chennai',icon:'🏘️',tag:'Chennai · west locality'},
+  {name:'Ashok Nagar',district:'Chennai',icon:'🏘️',tag:'Chennai · residential area'},
+  {name:'KK Nagar',district:'Chennai',icon:'🏘️',tag:'Chennai · west locality'},
+  {name:'Kodambakkam',district:'Chennai',icon:'🎬',tag:'Chennai · film industry hub'},
+  {name:'Saidapet',district:'Chennai',icon:'🏘️',tag:'Chennai · central locality'},
+  {name:'Washermanpet',district:'Chennai',icon:'🏘️',tag:'Chennai · north locality'},
+  // Tourist & Religious
+  {name:'Marina Beach',district:'Chennai',icon:'🌊',tag:'Chennai · world\'s longest beach'},
+  {name:'Kapaleeshwarar Temple',district:'Chennai',icon:'🛕',tag:'Chennai · Mylapore temple'},
+  {name:'Santhome Church',district:'Chennai',icon:'⛪',tag:'Chennai · basilica'},
+  {name:'Birla Planetarium Chennai',district:'Chennai',icon:'🌌',tag:'Chennai · Kotturpuram'},
+  {name:'Valluvar Kottam',district:'Chennai',icon:'🏛️',tag:'Chennai · Nungambakkam monument'},
+  {name:'MGR Memorial',district:'Chennai',icon:'🏛️',tag:'Chennai · Marina Beach landmark'},
 
-  // ── TIRUVALLUR DISTRICT
+  // ══════════════════════════════════════════════
+  // 🛕 FAMOUS TEMPLES OF TAMIL NADU
+  // ══════════════════════════════════════════════
+
+  // ── Pancha Bhuta Stalas (5 element temples)
+  {name:'Brihadeeswarar Temple Thanjavur',district:'Thanjavur',icon:'🛕',tag:'UNESCO · Shiva · Big Temple'},
+  {name:'Nataraja Temple Chidambaram',district:'Cuddalore',icon:'🛕',tag:'Pancha Bhuta · Akasha lingam'},
+  {name:'Ekambareswarar Temple Kancheepuram',district:'Kancheepuram',icon:'🛕',tag:'Pancha Bhuta · Prithvi lingam'},
+  {name:'Jambukeswarar Temple Trichy',district:'Tiruchirappalli',icon:'🛕',tag:'Pancha Bhuta · Appu lingam · Thiruvanaikaval'},
+  {name:'Arunachaleswarar Temple Tiruvannamalai',district:'Tiruvannamalai',icon:'🛕',tag:'Pancha Bhuta · Agni lingam'},
+  {name:'Kalahasti Temple',district:'Andhra Pradesh',icon:'🛕',tag:'Pancha Bhuta · Vayu lingam · near TN border'},
+
+  // ── Murugan Arupadai Veedu (6 abodes of Murugan)
+  {name:'Palani Murugan Temple',district:'Dindigul',icon:'🛕',tag:'Arupadai Veedu · Murugan · hill temple'},
+  {name:'Tiruchendur Murugan Temple',district:'Thoothukudi',icon:'🛕',tag:'Arupadai Veedu · coastal Murugan temple'},
+  {name:'Swamimalai Murugan Temple',district:'Thanjavur',icon:'🛕',tag:'Arupadai Veedu · Kumbakonam'},
+  {name:'Thirupparankundram Murugan Temple',district:'Madurai',icon:'🛕',tag:'Arupadai Veedu · cave temple Madurai'},
+  {name:'Thiruthani Murugan Temple',district:'Tiruvallur',icon:'🛕',tag:'Arupadai Veedu · hill temple'},
+  {name:'Pazhamudircholai Murugan Temple',district:'Madurai',icon:'🛕',tag:'Arupadai Veedu · forest temple Alagar Kovil'},
+
+  // ── Divya Desams (Vishnu temples)
+  {name:'Srirangam Ranganathaswamy Temple',district:'Tiruchirappalli',icon:'🛕',tag:'Divya Desam · largest temple complex India'},
+  {name:'Tirupati Balaji Temple',district:'Andhra Pradesh',icon:'🛕',tag:'Most visited temple · near TN border'},
+  {name:'Parthasarathy Temple Triplicane',district:'Chennai',icon:'🛕',tag:'Divya Desam · Chennai'},
+  {name:'Varadharaja Perumal Temple Kancheepuram',district:'Kancheepuram',icon:'🛕',tag:'Divya Desam · Vishnu temple'},
+  {name:'Nachiyarkoil Temple Kumbakonam',district:'Thanjavur',icon:'🛕',tag:'Divya Desam · Vishnu · Kumbakonam'},
+  {name:'Thirukoshtiyur Sowmya Narayana Temple',district:'Virudhunagar',icon:'🛕',tag:'Divya Desam · Virudhunagar'},
+  {name:'Alagar Kovil Madurai',district:'Madurai',icon:'🛕',tag:'Divya Desam · Kallalagar temple'},
+
+  // ── Shiva Temples (Paadal Petra Sthalams)
+  {name:'Kapaleeshwarar Temple Mylapore',district:'Chennai',icon:'🛕',tag:'Shiva temple · Chennai heritage'},
+  {name:'Thillai Nataraja Temple Chidambaram',district:'Cuddalore',icon:'🛕',tag:'Shiva · cosmic dance temple'},
+  {name:'Airavatesvara Temple Darasuram',district:'Thanjavur',icon:'🛕',tag:'UNESCO · Chola temple · Kumbakonam'},
+  {name:'Gangaikonda Cholapuram Temple',district:'Ariyalur',icon:'🛕',tag:'UNESCO · Chola capital temple'},
+  {name:'Thiruvidaimarudur Mahalingam Temple',district:'Thanjavur',icon:'🛕',tag:'Shiva · Kumbakonam area'},
+  {name:'Vaitheeswaran Koil',district:'Thanjavur',icon:'🛕',tag:'Navagraha · Angaraka · Sirkazhi'},
+  {name:'Thirunageswaram Temple',district:'Thanjavur',icon:'🛕',tag:'Navagraha · Rahu · Kumbakonam'},
+  {name:'Suryanar Koil',district:'Thanjavur',icon:'🛕',tag:'Navagraha · Suryan · Kumbakonam'},
+  {name:'Thingalur Kailasanathar Temple',district:'Thanjavur',icon:'🛕',tag:'Navagraha · Chandra'},
+  {name:'Alangudi Guru Temple',district:'Pudukkottai',icon:'🛕',tag:'Navagraha · Jupiter · Brihaspati'},
+  {name:'Thiruvenkaadu Budhan Temple',district:'Nagapattinam',icon:'🛕',tag:'Navagraha · Mercury · Budhan'},
+  {name:'Kanjanur Sukran Temple',district:'Thanjavur',icon:'🛕',tag:'Navagraha · Venus · Sukra'},
+  {name:'Thirunallar Saneeswaran Temple',district:'Puducherry',icon:'🛕',tag:'Navagraha · Saturn · Shani'},
+  {name:'Keezhaperumpallam Kethu Temple',district:'Nagapattinam',icon:'🛕',tag:'Navagraha · Kethu'},
+
+  // ── Famous Amman & Goddess Temples
+  {name:'Meenakshi Amman Temple Madurai',district:'Madurai',icon:'🛕',tag:'Meenakshi · most famous TN temple'},
+  {name:'Kanyakumari Bhagavathy Temple',district:'Kanyakumari',icon:'🛕',tag:'Devi · land\'s end temple'},
+  {name:'Aadi Jagannatha Perumal Suchindram',district:'Kanyakumari',icon:'🛕',tag:'Famous temple · Kanyakumari'},
+  {name:'Ponnainallur Maari Amman Kovil',district:'Thanjavur',icon:'🛕',tag:'Amman · Thanjavur famous temple'},
+  {name:'Samayapuram Mariamman Temple',district:'Tiruchirappalli',icon:'🛕',tag:'Mariamman · Trichy'},
+  {name:'Angalamman Temple Trichy',district:'Tiruchirappalli',icon:'🛕',tag:'Amman · Trichy area'},
+  {name:'Kodumudi Murugan Temple',district:'Erode',icon:'🛕',tag:'Murugan · Erode'},
+  {name:'Thirumeeyachur Lalithambika Temple',district:'Nagapattinam',icon:'🛕',tag:'Goddess · Lalithambika'},
+  {name:'Thiruvottiyur Thyagaraja Temple',district:'Chennai',icon:'🛕',tag:'Shiva · North Chennai'},
+  {name:'Tiruvallur Veeraraghava Temple',district:'Tiruvallur',icon:'🛕',tag:'Vishnu · Tiruvallur'},
+
+  // ── Pilgrimage & Major Temples
+  {name:'Rameswaram Ramanathaswamy Temple',district:'Ramanathapuram',icon:'🛕',tag:'Jyotirlinga · Char Dham pilgrim'},
+  {name:'Velankanni Basilica',district:'Nagapattinam',icon:'⛪',tag:'Our Lady of Good Health · pilgrim'},
+  {name:'Murugan Temple Tiruttani',district:'Tiruvallur',icon:'🛕',tag:'Murugan · Arupadai Veedu'},
+  {name:'Thiruvarur Thyagaraja Temple',district:'Tiruvarur',icon:'🛕',tag:'Shiva · largest temple chariot'},
+  {name:'Sirkazhi Brahmapureeswarar Temple',district:'Mayiladuthurai',icon:'🛕',tag:'Shiva · Tevaram shrine'},
+  {name:'Thiruvengadu Swetharanyeswarar Temple',district:'Nagapattinam',icon:'🛕',tag:'Navagraha · Budhan'},
+  {name:'Mannargudi Rajagopalaswamy Temple',district:'Tiruvarur',icon:'🛕',tag:'Vishnu · South Dwaraka'},
+  {name:'Kumbakonam Mahamaham Tank',district:'Thanjavur',icon:'🛕',tag:'Sacred tank · Kumbakonam'},
+  {name:'Adi Kumbeswarar Temple Kumbakonam',district:'Thanjavur',icon:'🛕',tag:'Shiva · main temple Kumbakonam'},
+  {name:'Sarangapani Temple Kumbakonam',district:'Thanjavur',icon:'🛕',tag:'Vishnu · Divya Desam Kumbakonam'},
+  {name:'Chakrapani Temple Kumbakonam',district:'Thanjavur',icon:'🛕',tag:'Vishnu · Kumbakonam'},
+  {name:'Kasi Viswanathar Temple Tenkasi',district:'Tenkasi',icon:'🛕',tag:'Shiva · South Kasi'},
+  {name:'Papanasam Shiva Temple',district:'Thanjavur',icon:'🛕',tag:'Shiva · Papanasam Thanjavur'},
+  {name:'Thiruvaiyaru Panchanadeeswara Temple',district:'Thanjavur',icon:'🛕',tag:'Shiva · Thyagaraja Aradhana'},
+  {name:'Srivilliputtur Andal Temple',district:'Virudhunagar',icon:'🛕',tag:'Andal · Divya Desam'},
+  {name:'Rajapalayam Swami Temple',district:'Virudhunagar',icon:'🛕',tag:'Famous temple · Rajapalayam'},
+  {name:'Courtallam Thirukkutralanathar Temple',district:'Tenkasi',icon:'🛕',tag:'Shiva · near Courtallam falls'},
+  {name:'Nellaiappar Temple Tirunelveli',district:'Tirunelveli',icon:'🛕',tag:'Shiva · Tirunelveli famous temple'},
+  {name:'Krishnapuram Palace Temple',district:'Kanyakumari',icon:'🛕',tag:'Heritage temple · Kanyakumari'},
+  {name:'Thanumalayan Temple Suchindram',district:'Kanyakumari',icon:'🛕',tag:'Shiva Vishnu Brahma · Kanyakumari'},
+  {name:'Murugan Temple Vellore',district:'Vellore',icon:'🛕',tag:'Murugan · Vellore'},
+  {name:'Jalakandeswarar Temple Vellore',district:'Vellore',icon:'🛕',tag:'Shiva · Vellore Fort temple'},
+  {name:'Tiruvannamalai Arunachaleswarar',district:'Tiruvannamalai',icon:'🛕',tag:'Shiva · Agni lingam · huge temple'},
+  {name:'Ooty Elk Hill Murugan Temple',district:'Nilgiris',icon:'🛕',tag:'Murugan · Ooty hill temple'},
+  {name:'Kodaikanal Kurinji Andavar Temple',district:'Dindigul',icon:'🛕',tag:'Vishnu · Kodaikanal hill temple'},
   {name:'Tiruvallur',district:'Tiruvallur',icon:'🏘️',tag:'District HQ'},
   {name:'Ponneri',district:'Tiruvallur',icon:'🏘️',tag:'Tiruvallur taluk'},
   {name:'Gummidipoondi',district:'Tiruvallur',icon:'🏭',tag:'Industrial town'},
